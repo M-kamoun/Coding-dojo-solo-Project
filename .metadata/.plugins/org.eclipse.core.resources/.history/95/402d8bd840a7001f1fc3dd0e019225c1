@@ -1,0 +1,19 @@
+package com.app.products.services;
+
+import org.springframework.stereotype.Service;
+
+import com.app.products.repositories.ProductRepository;
+
+@Service
+public class productService {
+	
+	private final ProductRepository productRepo;
+
+	public productService(ProductRepository productRepo) {
+	
+		this.productRepo = productRepo;
+	}
+	
+	
+
+}

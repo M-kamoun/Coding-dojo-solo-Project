@@ -1,0 +1,5 @@
+package com.app.products.models;
+
+public class Category {
+
+}

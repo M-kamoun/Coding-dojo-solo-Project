@@ -1,0 +1,25 @@
+package com.app.products.services;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
+import com.app.products.models.Product;
+import com.app.products.repositories.ProductRepository;
+
+@Service
+public class productService {
+
+	private final ProductRepository productRepo;
+
+	public productService(ProductRepository productRepo) {
+
+		this.productRepo = productRepo;
+	}
+
+	// Pagination
+	public Page<Product> getAllProducts(Pageable pageable) {
+		return productRepo.findAll(pageable);
+	}
+
+}

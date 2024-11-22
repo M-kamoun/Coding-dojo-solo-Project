@@ -1,0 +1,5 @@
+package com.app.products.controllers;
+
+public class CategoryController {
+
+}

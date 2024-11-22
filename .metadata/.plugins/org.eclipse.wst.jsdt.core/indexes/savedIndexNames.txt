@@ -1,0 +1,7 @@
+INDEX VERSION 1.4+C:\Users\mehdi\Desktop\Coding Dojo - SOLO PROJECT\Product Manager\.metadata\.plugins\org.eclipse.wst.jsdt.core\indexes
+3056647392.index
+3456618247.index
+1965174767.index
+3728445541.index
+73266169.index
+1191370571.index
