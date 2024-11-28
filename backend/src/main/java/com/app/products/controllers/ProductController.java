@@ -1,12 +1,13 @@
 package com.app.products.controllers;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -23,6 +24,7 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1")
+@CrossOrigin("*")
 public class ProductController {
 	
 	private final ProductService productServ;
@@ -59,21 +61,26 @@ public class ProductController {
 	
 	
 	@PostMapping("/products/new")
-	public ResponseEntity<Product> newProduct(@Valid @RequestBody Product product ){
+	public ResponseEntity<Product> newProduct( @RequestBody @Valid Product product ){
 		return ResponseEntity.status(HttpStatus.CREATED).body(productServ.saveProduct(product));
 	}
 	
 	@PutMapping("products/{id}/edit")
-	public ResponseEntity<Product> updateProduct( @PathVariable() Long id , @Valid @RequestBody Product product ){
-		product.setId(id);
-		return ResponseEntity.status(HttpStatus.OK).body(productServ.updateProduct(product));
+	public ResponseEntity<?> updateProduct(@PathVariable Long id, @Valid @RequestBody Product product) {
+	    Optional<Product> updatedProduct = productServ.updateProduct(id, product);
+
+	    if (updatedProduct.isPresent()) {
+	        return ResponseEntity.ok(updatedProduct.get()); 
+	    } else {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product with ID " + id + " not found");
+	    }
 	}
 	
 	// deactivate product
 	@PutMapping("products/{id}/product-de-activation")
-	public ResponseEntity<String> deActivateProduct(@PathVariable() Long id){
-		productServ.productActivation(id);
-		return ResponseEntity.ok("Product successfully deactivated!");
+	public ResponseEntity<?> deActivateProduct(@PathVariable() Long id){
+		
+		return ResponseEntity.ok(productServ.deactivateProduct(id));
 	}
 	
 	

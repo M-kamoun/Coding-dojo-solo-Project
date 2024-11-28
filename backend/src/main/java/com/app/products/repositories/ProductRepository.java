@@ -1,6 +1,8 @@
 package com.app.products.repositories;
 
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.app.products.models.Product;
@@ -13,6 +15,6 @@ import com.app.products.models.Product;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
 	
-	
+	Page<Product> findByIsActiveTrue(Pageable pageable);
 
 }

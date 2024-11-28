@@ -30,8 +30,8 @@ public class ProductService {
 
 	// Get All products with Pagination
 	public Page<Product> getAllProductsWPagination(int pageNumber,int pageSize) {
-		Pageable pageable = PageRequest.of(pageNumber, pageSize,Sort.Direction.ASC,"name");
-		return productRepo.findAll(pageable);
+		Pageable pageable = PageRequest.of(pageNumber, pageSize,Sort.by(Sort.Direction.DESC, "createdAt"));
+		return productRepo.findByIsActiveTrue(pageable);
 	}
 	
 	//get product by Id
@@ -50,9 +50,15 @@ public class ProductService {
 		return productRepo.save(product);
 	}
 	
-	// update a product
-	public Product updateProduct(Product product) {
-		return productRepo.save(product);
+	public Optional<Product> updateProduct(long id, Product product) {
+	    return productRepo.findById(id).map(existingProduct -> {
+	        existingProduct.setName(product.getName());
+	        existingProduct.setDescription(product.getDescription());
+	        existingProduct.setPrice(product.getPrice());
+	        existingProduct.setCategory(product.getCategory());
+
+	        return productRepo.save(existingProduct);
+	    });
 	}
 	
 	
@@ -60,15 +66,12 @@ public class ProductService {
 	// it can be not active
 	// if id is present in optional result findById(id) we set Active to false and save the product.
 	
-	public void productActivation(Long id) {
-		productRepo.findById(id).ifPresent(p->{
-			p.setIsActive(false);
-			productRepo.save(p);
-		});
+	public Optional<Product> deactivateProduct(long id) {
+	    return productRepo.findById(id).map(existingProduct -> {
+	        existingProduct.setIsActive(false); 
+	        return productRepo.save(existingProduct); 
+	    });
 	}
-	
-	
-	
 	
 
 }

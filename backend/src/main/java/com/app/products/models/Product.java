@@ -1,12 +1,15 @@
 package com.app.products.models;
 
-import java.time.LocalDate;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -15,6 +18,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
@@ -30,24 +34,28 @@ public class Product {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	
-	@NotNull()
-	@Size(min=1,max=255,message="Product Name must not be empty ")
+	@NotNull(message="Product Name  must not be empty ")
+	@Size(min=1,max=255,message="Product Name  must not be empty ")
 	private String name;
 	
-	@Column(length = 255)
+	@NotNull(message="Description must not be empty ")
+	@Size(min=1,max=255,message="Description must not be empty ")
     private String description;
 	
 	@NotNull(message="Price must not be empty")
-	@Min(value=0,message="Price must be positive")
+	@Min(value=1,message="Price must be greater than 0")
     private Double price;
 	
 	
 	@NotNull()
 	private Boolean isActive=true;
 	
+	
+	
+	// Relation with category
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="category_id")
-	//@JsonIgnore 
 	@JsonBackReference
 	private Category category;
 	
@@ -57,23 +65,46 @@ public class Product {
 	    return category != null ? category.getId() : null;
 	}
 	
+	// relation with orderLine
 	
+	 @OneToMany(mappedBy = "product",cascade = CascadeType.ALL, orphanRemoval = true)
+	 private List<OrderLine> orderlines;
+	 
+	 
+	 
+	 public List<StockMvt> getMvtStocks() {
+		return mvtStocks;
+	}
+	public void setMvtStocks(List<StockMvt> mvtStocks) {
+		this.mvtStocks = mvtStocks;
+	}
+	// relation with stock movement
+
+	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+	 private List<StockMvt> mvtStocks;
 	
-	
-	@DateTimeFormat(pattern="yyyy-MM-dd")
+	 
+	public List<OrderLine> getOrderlines() {
+		return orderlines;
+	}
+	public void setOrderlines(List<OrderLine> orderlines) {
+		this.orderlines = orderlines;
+	}
+
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	@Column(updatable=false)
-	private LocalDate createdAt;
+	private LocalDateTime createdAt;
 	
-	@DateTimeFormat(pattern="yyyy-MM-dd")
-	private LocalDate updatedAt;
+	 @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	private LocalDateTime updatedAt;
 	
 	@PrePersist
     protected void onCreate(){
-        this.createdAt = LocalDate.now();
+        this.createdAt = LocalDateTime.now();
     }
     @PreUpdate
     protected void onUpdate(){
-        this.updatedAt = LocalDate.now();
+        this.updatedAt = LocalDateTime.now();
     }
 	public Product() {
 		
@@ -103,18 +134,7 @@ public class Product {
 		this.price = price;
 	}
 	
-	public LocalDate getCreatedAt() {
-		return createdAt;
-	}
-	public void setCreatedAt(LocalDate createdAt) {
-		this.createdAt = createdAt;
-	}
-	public LocalDate getUpdatedAt() {
-		return updatedAt;
-	}
-	public void setUpdatedAt(LocalDate updatedAt) {
-		this.updatedAt = updatedAt;
-	}
+	
 	public Boolean getIsActive() {
 		return isActive;
 	}
@@ -126,6 +146,18 @@ public class Product {
 	}
 	public void setCategory(Category category) {
 		this.category = category;
+	}
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
+	}
+	public LocalDateTime getUpdatedAt() {
+		return updatedAt;
+	}
+	public void setUpdatedAt(LocalDateTime updatedAt) {
+		this.updatedAt = updatedAt;
 	}
 	
 	
