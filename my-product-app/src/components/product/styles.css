@@ -1,0 +1,8 @@
+.not-assigned {
+  color: red !important;
+  text-transform: uppercase;
+}
+
+.upper-case {
+  text-transform: uppercase;
+}
